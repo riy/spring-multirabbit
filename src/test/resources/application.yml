@@ -1,0 +1,36 @@
+info:
+  application:
+    name: Spring MultiRabbit
+    version: #{version}
+    build-date: #{buildDate}
+
+# Values that are global to all RabbitMQs are specified here.
+
+amqp:
+  my-broker-1:
+    prefetch-count: 250
+    rabbitmq:
+      connection-timeout: 5000ms
+  my-broker-2:
+    prefetch-count: 250
+    rabbitmq:
+      connection-timeout: 5000ms
+      listener:
+        simple:
+          retry:
+            enabled: true
+            initial-interval: 1s
+            max-attempts: 3
+            max-interval: 10s
+            multiplier: 2
+  named-broker:
+    rabbitmq:
+      connection-timeout: 5000ms
+      listener:
+        simple:
+          retry:
+            enabled: true
+            initial-interval: 1s
+            max-attempts: 3
+            max-interval: 10s
+            multiplier: 2

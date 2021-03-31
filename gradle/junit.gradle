@@ -1,0 +1,15 @@
+test {
+    useJUnitPlatform()
+}
+
+tasks.withType(Test).each { test ->
+    test.logging.captureStandardOutput LogLevel.INFO
+    test.testLogging {
+        showStandardStreams = false // Set 'true' to see more output during tests
+        exceptionFormat "full"
+    }
+
+    test.useJUnitPlatform {
+        includeEngines 'junit-jupiter'
+    }
+}

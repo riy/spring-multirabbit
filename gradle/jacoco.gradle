@@ -1,0 +1,59 @@
+jacoco {
+    toolVersion = '0.8.6'
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        html.enabled true
+    }
+    doFirst {
+        if (!gradle.taskGraph.hasTask(test)) {
+            throw new StopExecutionException()
+        }
+    }
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                counter = 'INSTRUCTION'
+                value = 'TOTALCOUNT'
+                minimum = 1.0
+            }
+        }
+
+        rule {
+            element = 'CLASS'
+
+            limit {
+                counter = 'BRANCH'
+                value = 'MISSEDCOUNT'
+                maximum = 0.0
+            }
+        }
+    }
+}
+
+task printCoverageReportLink {
+    onlyIf { jacocoTestCoverageVerification.state.failure }
+    doLast { println "Code coverage is missing. See report at: file://${buildDir}/reports/jacoco/test/html/index.html" }
+}
+
+jacocoTestCoverageVerification.finalizedBy printCoverageReportLink
+
+task verifyCoverage {
+    dependsOn jacocoTestReport
+    onlyIf {
+        gradle.taskGraph.hasTask(test) && gradle.taskGraph.hasTask(jacocoTestReport)
+    }
+}
+
+jacocoTestReport.dependsOn test
+test.finalizedBy jacocoTestCoverageVerification, jacocoTestReport
+check.dependsOn verifyCoverage
+
+task coverage {
+    dependsOn test, verifyCoverage
+}

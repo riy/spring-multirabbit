@@ -1,0 +1,5 @@
+spotbugs {
+    toolVersion = '4.2.0'
+    effort = 'default'
+    reportLevel = 'high'
+}

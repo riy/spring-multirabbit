@@ -1,0 +1,44 @@
+dependencies {
+    annotationProcessor "org.springframework.boot:spring-boot-autoconfigure-processor"
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
+    annotationProcessor "org.projectlombok:lombok:1.18.18"
+    compileOnly "org.projectlombok:lombok:1.18.18"
+
+    implementation "org.springframework:spring-web"
+
+    implementation "org.springframework.boot:spring-boot-starter-amqp"
+    implementation "org.springframework.boot:spring-boot-starter-actuator"
+    implementation "org.springframework.amqp:spring-amqp"
+    implementation "org.springframework.amqp:spring-rabbit"
+
+    implementation "org.apache.commons:commons-text:1.9"
+    implementation "org.springframework.boot:spring-boot-autoconfigure"
+
+    testCompileOnly "org.projectlombok:lombok:1.18.18"
+
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
+    testImplementation "org.springframework.amqp:spring-rabbit-test"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:5.7.1"
+    testImplementation "org.junit.jupiter:junit-jupiter-engine:5.7.1"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:5.7.1"
+    testImplementation "org.mockito:mockito-junit-jupiter:3.8.0"
+    testImplementation "org.testcontainers:testcontainers:1.15.2"
+    testImplementation "org.testcontainers:rabbitmq:1.15.2"
+    testImplementation "org.awaitility:awaitility:4.0.3"
+
+    testAnnotationProcessor "org.projectlombok:lombok:1.18.18"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher:1.7.1"
+    testRuntimeOnly "org.junit.platform:junit-platform-engine:1.7.1"
+    testImplementation "org.assertj:assertj-core:3.19.0"
+}
+
+allprojects {
+    repositories gradle.allRepositories
+}
+
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
+    }
+}

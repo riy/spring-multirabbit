@@ -1,0 +1,12 @@
+pluginManagement {
+
+    gradle.ext.allRepositories = {
+        mavenCentral()
+
+        gradlePluginPortal()
+    }
+
+    repositories gradle.allRepositories
+}
+
+rootProject.name = 'spring-multirabbit'

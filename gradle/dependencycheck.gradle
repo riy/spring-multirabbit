@@ -1,0 +1,9 @@
+dependencyCheck {
+    outputDirectory = "${buildDir}/reports/security"
+    suppressionFiles = ["${project.configDir}/dependency-check/suppressions.xml"]
+    // ignore spotbugs dependencies
+    skipConfigurations = configurations
+            .collect({ it.name })
+            .findAll({ it.startsWith('spotbugs') })
+    failBuildOnCVSS = 1
+}

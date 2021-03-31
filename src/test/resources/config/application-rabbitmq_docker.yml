@@ -1,0 +1,220 @@
+amqp:
+  my-broker-1:
+    rabbitmq: # Bean name: myBroker1RabbitConnectionFactory
+      host: localhost
+      port: 5672
+      virtual-host: vhost1
+      username: user1
+      password: secret
+      ssl:
+        enabled: false
+        validate-server-certificate: false
+      connection-timeout: 5000ms
+      listener:
+        simple:
+          retry:
+            enabled: true
+            initial-interval: 1s
+            max-attempts: 3
+            max-interval: 10s
+            multiplier: 2
+      template:
+        retry:
+          enabled: true
+          initial-interval: 1s
+          max-attempts: 3
+          max-interval: 10s
+          multiplier: 2
+    consumers:
+      consumer1:
+        exchange: # Bean name: myBroker1Consumer1ExchangeRabbitTemplate, pre-configured with Exchange/RoutingKey
+#          type: # Missing, will default to "topic"
+          name: my-first.exchange # Bean name: myBroker1Consumer1Exchange
+          should-declare: true
+          routing-key: consumer1.routing-key
+        queue:
+          name: my-first.queue # Bean name: myBroker1Consumer1Queue
+          should-declare: true
+          declare-binding: true # Bean name: myBroker1Consumer1Binding
+          max-length: 42
+          max-length-bytes: 16777216
+          overflow: reject-publish
+        deadletter-exchange:
+#          type: # Missing, will default to "topic"
+          name: my-first.exchange.deadletter # Bean name: myBroker1Consumer1DeadletterExchange
+          should-declare: true
+          routing-key: consumer1.routing-key.deadletter
+        deadletter-queue:
+          name: my-first.queue.deadletter # Bean name: myBroker1Consumer1DeadletterQueue
+          should-declare: true
+          declare-binding: true # Bean name: myBroker1Consumer1DeadletterBinding
+        metadata:
+          arbitrary-key: arbitrary-value
+          another-arbitrary-key: another-arbitrary-value
+      consumer2:
+        exchange:
+          name: consumer2.exchange
+          should-declare: true
+          routing-key: consumer2.routing-key
+        queue:
+          name: consumer2.queue
+          should-declare: true
+          overflow: drop-head
+          declare-binding: false # No Binding will be created, the Queue will be bound to the default Exchange '(AMQP default)'
+      consumer3:
+        exchange:
+          type: headers # Possible values: "topic" or "headers"; FanoutExchange and DirectExchange not supported yet
+          name: e.headers # Bean name: myBroker1Consumer3Exchange
+          should-declare: true
+        queue:
+          name: q.headers # Bean name: myBroker1Consumer3Queue
+          should-declare: true
+          declare-binding: true
+          bindings: # Create two bindings between this exchange and queue, one with two arguments and one with just one
+            - arguments:
+                SomeHeaderKey1: SomeHeaderValue1
+                SomeHeaderKey2: SomeHeaderValue2
+            - arguments:
+                AnotherHeaderKey: AnotherHeaderValue
+        deadletter-exchange:
+          type: headers # Should be the same type as the regular Exchange
+          name: e.headers.deadletter # Bean name: myBroker1Consumer3DeadletterExchange
+          should-declare: true
+#          routing-key: # A HeadersExchange doesn't support routing-keys, so do not specify one
+        deadletter-queue:
+          name: q.headers.deadletter # Bean name: myBroker1Consumer3DeadletterQueue
+          should-declare: true
+          declare-binding: true
+          bindings: # Makes sense to have the same Binding specification as the regular Exchange/Queue
+            - arguments:
+                SomeHeaderKey1: SomeHeaderValue1
+                SomeHeaderKey2: SomeHeaderValue2
+            - arguments:
+                AnotherHeaderKey: AnotherHeaderValue
+#          declare-binding: true # Not needed, as the queue bindings parameter above implicitly creates two bindings
+    producers:
+      producer1:
+        exchange:
+          name: producer1.exchange
+          should-declare: true
+          routing-key: "#"
+        queue:
+          name: producer1.queue
+          should-declare: true
+          declare-binding: true
+  my-broker-2:
+    rabbitmq:
+      host: localhost
+      port: 5672
+      virtual-host: vhost2
+      username: user2
+      password: secret
+      ssl:
+        enabled: false
+        validate-server-certificate: false
+    consumers:
+      consumer1:
+#        exchange: # Entire block missing, Exchange will not get created
+#          name: my.exchange
+#          should-declare: true
+#          routing-key: my.routing-key
+        queue:
+          name: # Missing, Queue will not get created
+          should-declare: true
+          declare-binding: true # No effect, as Exchange and Queue are missing
+    producers:
+      producer1:
+        exchange:
+          name: some-other.exchange
+          should-declare: true
+#        queue: # Queue and Binding will not get created
+#          name: some-other.queue
+#          should-declare: true
+#          declare-binding: true
+  named-broker:
+    rabbitmq:
+      host: localhost
+      port: 5672
+      virtual-host: vhost3
+      username: user3
+      password: secret
+      ssl:
+        enabled: false
+        validate-server-certificate: false
+    consumers:
+      consumer1:
+        exchange:
+          name: # Missing, Exchange will not get created
+          should-declare: true
+          routing-key: any.routing-key
+        queue:
+          name: any.queue
+          should-declare: true
+          declare-binding: true # No effect, Exchange is missing
+      consumer2:
+        queue:
+          name: test.queue
+          should-declare: true
+#          declare-binding: true # Missing, no Binding will get created, the Queue will be bound to the default Exchange '(AMQP default)'
+#    producers: # Entire block missing, nothing will get created here, for code coverage
+#      producer1:
+#        exchange:
+#          name: irrelevant.exchange
+#          should-declare: true
+#          routing-key: irrelevant.routing-key
+#        queue:
+#          name: irrelevant.queue
+#          should-declare: true
+#          declare-binding: true
+  code-coverage-rabbitmq-1:
+    rabbitmq:
+      host: localhost
+      port: 5672
+      virtual-host: vhost4
+      username: user4
+      password: secret
+      ssl:
+        enabled: true
+        validate-server-certificate: false
+      publisher-confirm-type: correlated
+#    consumers: Entire block missing, nothing will get created here, for code coverage.
+#               If there are no consumers to configure then the "consumers" block must not
+#               be there in its entirety. Otherwise Spring won't be able to read the YAML.
+#      ...
+  code-coverage-rabbitmq-2:
+    rabbitmq:
+      host: localhost
+      port: 5672
+      virtual-host: vhost5
+      username: user5
+      password: secret
+      ssl:
+        enabled: false
+        validate-server-certificate: false
+      publisher-confirm-type: correlated
+    consumers:
+      consumer1:
+        exchange:
+          name: doesnt-matter.exchange
+          should-declare: false
+          routing-key: doesnt-matter.routing-key
+        queue:
+          name: doesnt-matter.queue
+          should-declare: false
+          declare-binding: false
+        deadletter-exchange:
+          name: doesnt-matter.exchange.deadletter
+        deadletter-queue:
+          name: doesnt-matter.queue.deadletter
+      consumer2:
+        exchange:
+          type: headers
+          name: also.doesnt-matter.exchange
+          should-declare: true
+        queue:
+          name: also.doesnt-matter.queue
+          should-declare: true
+          overflow: some-invalid-value
+        deadletter-exchange:
+          type: headers
+          # Missing bindings parameter: queue will not receive messages

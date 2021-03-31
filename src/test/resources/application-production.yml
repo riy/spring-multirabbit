@@ -1,0 +1,35 @@
+# This is an example configuration, it's not used anywhere in this library.
+# It shows how your production configuration would overwrite specific values only.
+# This file would reside in your target application's runtime code.
+
+amqp:
+  my-broker-1:
+    rabbitmq:
+      host: production-rabbitmq1.server
+      port: 5671
+      virtual-host: vhost-name1
+      #      username: (overridden in <module>/src/main/resources/config/*.yml)
+      #      password: (overridden as well)
+      ssl:
+        enabled: true
+        validate-server-certificate: false
+  my-broker-2:
+    rabbitmq:
+      host: production-rabbitmq2.server
+      port: 5671
+      virtual-host: vhost-name2
+      #      username: (overridden in <module>/src/main/resources/config/*.yml)
+      #      password: (overridden as well)
+      ssl:
+        enabled: true
+        validate-server-certificate: false
+  named-broker:
+    rabbitmq:
+      host: production-rabbitmq3.server
+      port: 5671
+      virtual-host: vhost-name3
+      #      username: (overridden in <module>/src/main/resources/config/*.yml)
+      #      password: (overridden as well)
+      ssl:
+        enabled: true
+        validate-server-certificate: false
